@@ -1,6 +1,6 @@
 package baseball.state;
 
-import baseball.game.GameContext;
+import baseball.game.GameController;
 import baseball.view.OutputView;
 
 public class GameOverState implements GameState {
@@ -12,7 +12,7 @@ public class GameOverState implements GameState {
     }
 
     @Override
-    public void handle(GameContext gameContext) {
+    public void handle(GameController gameContext) {
         OutputView.printEndMessage();
     }
 

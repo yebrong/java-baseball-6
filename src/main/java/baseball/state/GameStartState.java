@@ -1,13 +1,14 @@
 package baseball.state;
 
-import baseball.game.GameContext;
+import baseball.game.Game;
+import baseball.game.GameController;
 import baseball.validation.GameValidator;
 import baseball.view.InputView;
 import baseball.view.OutputView;
-import camp.nextstep.edu.missionutils.Console;
 
 public class GameStartState implements GameState {
     private static final GameStartState INSTANCE = new GameStartState();
+
 
     private GameStartState() {}
 
@@ -16,25 +17,27 @@ public class GameStartState implements GameState {
     }
 
     @Override
-    public void handle(GameContext game) {
+    public void handle(GameController gameContext) {
         OutputView.printStartMessage();
+        Game game = gameContext.getGame();
         do {
-            String input = game.initialize();
+            String input = gameContext.initialize();
             game.calculateTotalScore(input);
-        } while (game.getTotalStrike() != 3);
+            gameContext.printResult(input);
+        } while (game.getTotalStrike() != THREE_STRIKE);
 
         OutputView.printWinningMessage();
 
         String gameResult = InputView.inputGameState();
         GameValidator.validateGameRestartInput(gameResult);
 
-        if (gameResult.equals("1")) {
+        if (gameResult.equals(RETRY)) {
             game.resetGame();
-            game.setState(GameStartState.getInstance());
-            game.run();
+            gameContext.setState(GameStartState.getInstance());
+            gameContext.run();
         }
-        if (gameResult.equals("2")) {
-            game.setState(GameOverState.getInstance());
+        if (gameResult.equals(ENDING)) {
+            gameContext.setState(GameOverState.getInstance());
         }
     }
 
